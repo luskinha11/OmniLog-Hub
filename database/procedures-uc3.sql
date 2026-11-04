@@ -30,6 +30,12 @@ DELIMITER $$
 
 CREATE PROCEDURE sp_close_daily_billing(IN p_date DATE)
 BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        RESIGNAL;
+    END;
+
     IF p_date IS NULL THEN
         SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'A data do fechamento é obrigatória';
