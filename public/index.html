@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#09070f">
+  <meta name="description" content="OmniLog Hub - plataforma integrada de gestão logística.">
+  <title>OmniLog Hub | Gestão Logística</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="OmniLog Hub - início">
+      <span class="brand-mark">O</span>
+      <span class="brand-name">OMNILOG <b>HUB</b></span>
+    </a>
+    <div class="top-actions">
+      <span id="api-status" class="status"><i class="status-dot"></i> Verificando conexão...</span>
+      <span id="user-label" class="user-label hidden"></span>
+      <button id="logout-button" class="button button-outline button-small hidden" type="button">Sair da conta</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">OMNILOG SOLUTIONS S.A.</p>
+        <h1>Logística inteligente.<br><span>Operação conectada.</span></h1>
+        <p class="hero-description">Gerencie produtos, estoque, pedidos e entregas em uma única plataforma.</p>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+        <div class="hero-cube">OH</div>
+        <span class="art-dot dot-one"></span><span class="art-dot dot-two"></span><span class="art-dot dot-three"></span>
+      </div>
+    </section>
+
+    <section id="auth-panel" class="panel auth-panel">
+      <div class="auth-heading">
+        <p class="eyebrow">ACESSO À PLATAFORMA</p>
+        <h2>Bem-vindo ao OmniLog</h2>
+        <p class="muted">Entre na sua conta ou crie um cadastro para continuar.</p>
+      </div>
+      <div class="tabs" role="tablist" aria-label="Acesso">
+        <button class="tab active" data-tab="login" type="button" role="tab" aria-selected="true">Entrar</button>
+        <button class="tab" data-tab="register" type="button" role="tab" aria-selected="false">Criar conta</button>
+      </div>
+      <form id="login-form" class="form" autocomplete="on">
+        <label>E-mail
+          <input name="email" type="email" placeholder="seuemail@exemplo.com" required autocomplete="username">
+        </label>
+        <label>Senha
+          <input name="password" type="password" placeholder="Digite sua senha" required autocomplete="current-password">
+        </label>
+        <button class="button button-primary button-full" type="submit">Entrar na plataforma</button>
+        <button id="show-recovery" class="text-button" type="button">Esqueci minha senha</button>
+      </form>
+      <form id="register-form" class="form hidden" autocomplete="on">
+        <label>Nome completo
+          <input name="name" type="text" placeholder="Como podemos te chamar?" minlength="2" maxlength="150" required autocomplete="name">
+        </label>
+        <label>E-mail
+          <input name="email" type="email" placeholder="seuemail@exemplo.com" required autocomplete="email">
+        </label>
+        <label>Senha <span class="label-hint">Mínimo de 8 caracteres</span>
+          <input name="password" type="password" placeholder="Crie uma senha segura" minlength="8" required autocomplete="new-password">
+        </label>
+        <button class="button button-primary button-full" type="submit">Criar minha conta</button>
+      </form>
+      <form id="recovery-form" class="form hidden">
+        <div class="notice notice-info">Informe seu e-mail e solicite um código. No modo local sem SMTP, o código será exibido no terminal do servidor.</div>
+        <label>E-mail cadastrado
+          <input name="email" type="email" placeholder="seuemail@exemplo.com" required autocomplete="email">
+        </label>
+        <button id="request-reset-button" class="button button-outline button-full" type="submit">Enviar código de recuperação</button>
+        <div class="form-divider"><span>Depois de receber o código</span></div>
+        <label>Código de 6 dígitos
+          <input name="code" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="000000" autocomplete="one-time-code">
+        </label>
+        <label>Nova senha
+          <input name="password" type="password" minlength="8" placeholder="Mínimo de 8 caracteres" autocomplete="new-password">
+        </label>
+        <button id="reset-password-button" class="button button-primary button-full" type="button">Redefinir senha</button>
+        <button id="back-login" class="text-button" type="button">Voltar para entrar</button>
+      </form>
+      <p id="auth-message" class="message" role="status" aria-live="polite"></p>
+    </section>
+
+    <section id="app-panel" class="hidden">
+      <div class="dashboard-heading">
+        <div>
+          <p class="eyebrow">PAINEL DE CONTROLE</p>
+          <h2 id="welcome-title">Sua operação</h2>
+          <p class="muted">Acompanhe as atividades e acesse os recursos da plataforma.</p>
+        </div>
+        <button id="refresh-all" class="button button-outline" type="button">Atualizar dados</button>
+      </div>
+
+      <div id="admin-summary" class="stats hidden"></div>
+
+      <div class="main-grid">
+        <section class="panel catalog-panel">
+          <div class="section-heading">
+            <div><p class="eyebrow">CATÁLOGO</p><h2>Produtos disponíveis</h2></div>
+            <span id="product-count" class="count-pill">0 produtos</span>
+          </div>
+          <div class="search-wrap"><input id="product-search" type="search" placeholder="Buscar produto ou categoria..." aria-label="Buscar produtos"></div>
+          <div id="products-list" class="products-list"><div class="loading-line">Carregando produtos...</div></div>
+        </section>
+
+        <aside id="cart-panel" class="panel cart-panel">
+          <div class="section-heading"><div><p class="eyebrow">SEU PEDIDO</p><h2>Carrinho</h2></div><span id="cart-count" class="count-pill">0 itens</span></div>
+          <div id="cart-items" class="cart-items"><p class="muted empty-state">Seu carrinho está vazio.</p></div>
+          <div class="cart-total"><span>Total</span><strong id="cart-total">R$ 0,00</strong></div>
+          <button id="checkout-button" class="button button-primary button-full" type="button" disabled>Finalizar pedido</button>
+          <p class="helper-text">O estoque é reservado automaticamente ao confirmar o pedido.</p>
+        </aside>
+      </div>
+
+      <div class="secondary-grid">
+        <section id="orders-panel" class="panel">
+          <div class="section-heading"><div><p class="eyebrow">ACOMPANHAMENTO</p><h2>Meus pedidos</h2></div><button id="refresh-orders" class="icon-button" type="button" aria-label="Atualizar pedidos" title="Atualizar">↻</button></div>
+          <div id="orders-list" class="orders-list"><p class="muted">Nenhum pedido para exibir.</p></div>
+        </section>
+        <section class="panel tracking-panel">
+          <p class="eyebrow">RASTREIO</p><h2>Acompanhar entrega</h2>
+          <p class="muted">Consulte a situação da sua entrega usando o código de rastreio.</p>
+          <form id="track-form" class="inline-form">
+            <input name="code" placeholder="Ex.: OMNI-2026-000001" required aria-label="Código de rastreio">
+            <button class="button button-primary" type="submit">Buscar</button>
+          </form>
+          <div id="tracking-result" class="tracking-result muted" aria-live="polite">Informe um código para consultar.</div>
+        </section>
+      </div>
+
+      <section id="staff-panel" class="staff-area hidden">
+        <div class="staff-title"><div><p class="eyebrow">CENTRAL DE OPERAÇÕES</p><h2>Administração do sistema</h2><p class="muted">Gerencie o catálogo, estoque, pedidos e entregas.</p></div><span class="role-pill">Área restrita</span></div>
+
+        <section id="product-management-panel" class="panel management-panel">
+          <div class="section-heading"><div><p class="eyebrow">CATÁLOGO</p><h2>Gerenciar produtos</h2></div><button id="cancel-product-edit" class="button button-outline button-small hidden" type="button">Cancelar edição</button></div>
+          <form id="product-form" class="management-form">
+            <input name="id" type="hidden">
+            <input name="active" type="hidden" value="true">
+            <label>Nome do produto<input name="name" required maxlength="150" placeholder="Nome do produto"></label>
+            <label>Categoria<select name="category_id" required id="product-category"><option value="">Selecione</option></select></label>
+            <label>Preço (R$)<input name="price" type="number" min="0" step="0.01" required placeholder="0,00"></label>
+            <label>Peso (kg)<input name="weight" type="number" min="0" step="0.001" value="0"></label>
+            <label class="field-wide">Descrição<input name="description" maxlength="1000" placeholder="Descrição resumida do produto"></label>
+            <button class="button button-primary" type="submit">Salvar produto</button>
+          </form>
+          <div id="managed-products" class="table-wrap"></div>
+        </section>
+
+        <div class="management-grid">
+          <section class="panel management-panel"><div class="section-heading"><div><p class="eyebrow">ARMAZÉNS</p><h2>Controle de estoque</h2></div></div><div id="inventory-list" class="table-wrap"></div></section>
+          <section class="panel management-panel"><div class="section-heading"><div><p class="eyebrow">VENDAS</p><h2>Pedidos recentes</h2></div></div><div id="staff-orders" class="table-wrap"></div></section>
+        </div>
+        <section class="panel management-panel"><div class="section-heading"><div><p class="eyebrow">TRANSPORTE</p><h2>Gestão de entregas</h2></div></div><div id="deliveries-list" class="table-wrap"></div></section>
+      </section>
+    </section>
+  </main>
+
+  <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+  <footer><span class="footer-brand">OMNILOG HUB</span><span>Projeto acadêmico de Desenvolvimento de Sistemas</span></footer>
+</body>
+</html>

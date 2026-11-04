@@ -1,0 +1,175 @@
+erDiagram
+    AUDIT_LOGS {
+        bigint_unsigned id PK
+        bigint_unsigned user_id
+        varchar_100_ action
+        json details
+        timestamp created_at
+    }
+    CATEGORIES {
+        bigint_unsigned id PK
+        varchar_100_ name
+        text description
+    }
+    CUSTOMERS {
+        bigint_unsigned id PK
+        bigint_unsigned user_id
+        varchar_150_ name
+        varchar_14_ cpf
+        varchar_20_ phone
+        varchar_255_ address
+        varchar_100_ city
+        char_2_ state
+        varchar_10_ postal_code
+        timestamp created_at
+    }
+    DAILY_BILLING_CLOSINGS {
+        date closing_date PK
+        bigint_unsigned orders_count
+        decimal_14_2_ gross_sales
+        decimal_14_2_ approved_payments
+        decimal_14_2_ pending_payments
+        bigint_unsigned cancelled_orders
+        timestamp generated_at
+    }
+    DAILY_LOGISTICS_SUMMARY {
+        date snapshot_date PK
+        bigint_unsigned orders_total
+        bigint_unsigned deliveries_total
+        bigint_unsigned delivered_total
+        bigint_unsigned delayed_total
+        bigint_unsigned in_transit_total
+        bigint_unsigned active_routes_total
+        decimal_12_2_ average_route_distance_km
+        timestamp generated_at
+    }
+    DELIVERIES {
+        bigint_unsigned id PK
+        bigint_unsigned order_id
+        varchar_40_ tracking_code
+        enum__PREPARING___IN_TRANSIT___DELIVERED___DELAYED__ status
+        date estimated_delivery
+        datetime delivered_at
+        timestamp updated_at
+    }
+    DRIVERS {
+        bigint_unsigned id PK
+        varchar_150_ name
+        varchar_20_ phone
+        varchar_40_ license_number
+        tinyint_1_ active
+    }
+    EMPLOYEES {
+        bigint_unsigned id PK
+        bigint_unsigned user_id
+        varchar_150_ name
+        varchar_100_ position
+        timestamp created_at
+    }
+    INVENTORY {
+        bigint_unsigned id PK
+        bigint_unsigned warehouse_id
+        bigint_unsigned product_id
+        int_unsigned quantity
+        int_unsigned reserved_quantity
+        timestamp updated_at
+    }
+    LOGISTICS_ROUTES {
+        bigint_unsigned id PK
+        varchar_120_ name
+        varchar_150_ origin
+        varchar_150_ destination
+        decimal_10_2_ distance_km
+        int_unsigned estimated_minutes
+        bigint_unsigned driver_id
+        bigint_unsigned vehicle_id
+        tinyint_1_ active
+    }
+    ORDER_ITEM_ALLOCATIONS {
+        bigint_unsigned id PK
+        bigint_unsigned order_item_id
+        bigint_unsigned inventory_id
+        int_unsigned quantity
+    }
+    ORDER_ITEMS {
+        bigint_unsigned id PK
+        bigint_unsigned order_id
+        bigint_unsigned product_id
+        int_unsigned quantity
+        decimal_12_2_ unit_price
+    }
+    PASSWORD_RESET_TOKENS {
+        bigint_unsigned id PK
+        bigint_unsigned user_id
+        char_64_ token_hash
+        datetime expires_at
+        datetime used_at
+        tinyint_unsigned attempts
+        timestamp created_at
+    }
+    PAYMENTS {
+        bigint_unsigned id PK
+        bigint_unsigned order_id
+        enum__PIX___CARD___BOLETO___CASH__ method
+        decimal_12_2_ amount
+        enum__PENDING___APPROVED___REJECTED___REFUNDED__ status
+        datetime paid_at
+        timestamp created_at
+    }
+    PRODUCTS {
+        bigint_unsigned id PK
+        bigint_unsigned category_id
+        varchar_150_ name
+        text description
+        decimal_12_2_ price
+        decimal_10_3_ weight
+        tinyint_1_ active
+        timestamp created_at
+    }
+    SALES_ORDERS {
+        bigint_unsigned id PK
+        bigint_unsigned customer_id
+        varchar_60_ order_number
+        enum__PENDING___CONFIRMED___SEPARATING___SHIPPED___DELIVERED___CANCELLED__ status
+        decimal_12_2_ total
+        timestamp created_at
+    }
+    USERS {
+        bigint_unsigned id PK
+        varchar_150_ email
+        varchar_255_ password_hash
+        enum__ADMIN___MANAGER___OPERATOR___CUSTOMER__ role
+        tinyint_1_ active
+        timestamp created_at
+    }
+    VEHICLES {
+        bigint_unsigned id PK
+        varchar_10_ plate
+        varchar_100_ model
+        decimal_10_2_ capacity_kg
+        enum__AVAILABLE___IN_USE___MAINTENANCE__ status
+    }
+    WAREHOUSES {
+        bigint_unsigned id PK
+        varchar_120_ name
+        varchar_100_ city
+        char_2_ state
+        varchar_255_ address
+        tinyint_1_ active
+    }
+    USERS ||--o{ AUDIT_LOGS : relaciona
+    USERS ||--o{ CUSTOMERS : relaciona
+    SALES_ORDERS ||--o{ DELIVERIES : relaciona
+    USERS ||--o{ EMPLOYEES : relaciona
+    PRODUCTS ||--o{ INVENTORY : relaciona
+    WAREHOUSES ||--o{ INVENTORY : relaciona
+    DRIVERS ||--o{ LOGISTICS_ROUTES : relaciona
+    VEHICLES ||--o{ LOGISTICS_ROUTES : relaciona
+    INVENTORY ||--o{ ORDER_ITEM_ALLOCATIONS : relaciona
+    ORDER_ITEMS ||--o{ ORDER_ITEM_ALLOCATIONS : relaciona
+    SALES_ORDERS ||--o{ ORDER_ITEMS : relaciona
+    PRODUCTS ||--o{ ORDER_ITEMS : relaciona
+    USERS ||--o{ PASSWORD_RESET_TOKENS : relaciona
+    SALES_ORDERS ||--o{ PAYMENTS : relaciona
+    CATEGORIES ||--o{ PRODUCTS : relaciona
+    CUSTOMERS ||--o{ SALES_ORDERS : relaciona

@@ -1,0 +1,15 @@
+node_modules/
+.env
+coverage/
+*.log
+.DS_Store
+dist/
+release/
+.electron-cache/
+
+# Backups locais do banco
+backups/*.sql
+
+# Arquivos gerados pelo Maven
+desktop-java/target/
+desktop-java/dependency-reduced-pom.xml
